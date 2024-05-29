@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cryptocurrency Exchange</title>
+    <link rel="stylesheet" href="../static/coin.css">
+</head>
+
+<body>
+    <!-- Marquee -->
+    <div class="marquee w-full h-12 overflow-hidden position-relative">
+        <ul class="marquee-content h-full flex">
+            <!-- main -->
+            <!-- 1 -->
+            <li class="flex justify-center items-center flex-shrink-0 text-white transform scale-75 lg:scale-100"
+                th:each="coin : ${cloneCoins}" th:key="${coin.name}">
+                <div class="flex justify-between w-3/4">
+                    <!-- ticker -->
+                    <div class="flex items-center">
+                        <img th:src="${coin.image}" alt="coin logo"
+                            class="w-4 h-4 lg:w-6 lg:h-6 rounded-full mr-4 object-cover" />
+                        <div class="hidden lg:block">
+                            <p class="font-bold" th:text="${coin.name}"></p>
+                            <p class="text-xs uppercase tracking-widest " th:text="${coin.symbol}"></p>
+                        </div>
+                    </div>
+                    <!-- price -->
+                    <div>
+                        <p class="font-bold text-xs lg:text-base flex justify-end "
+                            th:text="${{ $filters.comma_separator(coin.current_price) }}"></p>
+                        <!-- percent red -->
+                        <p class="font-bold text-xs text-red-400 flex justify-end items-center "
+                            th:if="${$filters.price_negative(coin.price_change_percentage_24h)}">
+                            <fa icon="caret-down" class="mr-1" />
+                            <span th:text="${$filters.string_trunc(coin.price_change_percentage_24h, 5)}"></span>%
+                        </p>
+                        <!-- percent green -->
+                        <p th:else class="font-bold text-xs text-green-400 flex justify-end items-center ">
+                            <fa icon="caret-up" class="mr-1" />
+                            <span th:text="${$filters.string_trunc(coin.price_change_percentage_24h, 5)}"></span>%
+                        </p>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+    <!-- Table -->
+    <div class="container mx-auto pt-18 px-2">
+        <!-- table -->
+        <table class="table-fixed cursor-pointer">
+            <caption class="table-title font-bold text-gray-700  pb-2">Cryptocurrency Exchange - Top 20 (Market Cap)
+            </caption>
+            <!-- head -->
+            <thead>
+                <tr class="relative text-left text-gray-600 text-sm">
+                    <td class="p-2">
+                        Search:
+                        <input type="text" placeholder="Coin Name ..." class="border border-gray-500 rounded p-2"
+                            th:value="${search}" />
+                    </td>
+                </tr>
+                <tr class="text-left bg-gray-100 text-gray-600 text-sm">
+                    <th class="w-1/4 p-4">Coin Name</th>
+                    <th class="w-1/4">Market Price(Real Time)</th>
+                    <th class="w-1/4">Change%(24 Hours)</th>
+                    <th class="w-1/4 hidden sm:table-cell">Trading Volume</th>
+                    <th class="w-1/4 hidden sm:table-cell">Market Capitalization</th>
+                </tr>
+            </thead>
+            <!-- body -->
+            <tbody class="divide-y">
+                <!-- 1 -->
+                <tr class="text-sm hover:bg-gray-100 transition duration-300" th:each="coin : ${matchedNames}"
+                    th:key="${coin.name}">
+                    <td class="p-4 flex items-center">
+                        <p class="mr-2" th:text="${coin.market_cap_rank}"></p>
+                        <img th:src="${coin.image}" alt="coin logo" class="w-7 h-7 rounded-full mr-1" />
+                        <p class="font-bold p-1 mr-1" th:text="${coin.name}"></p>
+                        <p class="uppercase text-gray-500 hidden sm:table-cell" th:text="${coin.symbol}"></p>
+                    </td>
+                    <td class="font-bold text-gray-600">
+                        $<span th:text="${{ $filters.comma_separator(coin.current_price) }}"></span>
+                    </td>
+                    <td class=" font-bold">
+                        <div class="text-red-500" th:if="${$filters.price_negative(coin.price_change_percentage_24h)}">
+                            <fa icon="caret-down" class="mr-1" /><span
+                                th:text="${coin.price_change_percentage_24h}"></span>%
+                        </div>
+                        <div th:else class="text-green-500">
+                            <fa icon="caret-up" class="mr-1" /><span
+                                th:text="${coin.price_change_percentage_24h}"></span>%
+                        </div>
+                    </td>
+                    <td class="hidden sm:table-cell">
+                        <p style="color:rgb(26, 137, 165)" th:text="${{ $filters.comma_separator(coin.total_volume) }}">
+                        </p>
+                    </td>
+                    <td class="pr-10 hidden sm:table-cell">
+                        <p style="color:rgb(26, 137, 165)" th:text="${{ $filters.comma_separator(coin.market_cap) }}">
+                        </p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <script src="../static/coin.js"></script>
+</body> 
+
+</html>

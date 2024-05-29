@@ -1,0 +1,54 @@
+/* coin.css */
+
+#app {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.marquee-content {
+  animation: scrolling 25s linear infinite;
+}
+
+.marquee-content li {
+  width: 19%;
+}
+
+.table-title {
+  font-size: 30px;
+  bottom: 30;
+  height: 1.5em;
+}
+
+.marquee:before,
+.marquee:after {
+  position: absolute;
+  top: 0;
+  width: 10rem;
+  height: 3em;
+  content: "";
+  z-index: 1;
+}
+
+.marquee {
+  background: rgb(6, 78, 107);
+}
+
+.marquee:before {
+  left: 0;
+  background: linear-gradient(to right, rgb(26, 137, 165) 0%, transparent 30%);
+}
+
+.marquee:after {
+  right: 0;
+  background: linear-gradient(to left, rgb(26, 137, 165) 0%, transparent 30%);
+}
+
+@keyframes scrolling {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-100%);
+  }
+}

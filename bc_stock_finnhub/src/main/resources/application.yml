@@ -1,0 +1,62 @@
+server:
+  port: 8083
+
+api:
+  finnhub:
+    token: cju3it9r01qr958213c0cju3it9r01qr958213cg
+    # https://finnhub.io/api/v1/quote?symbol=AAPL&token=cju3it9r01qr958213c0cju3it9r01qr958213cg
+    domain: finnhub.io
+    path: /api/v1
+    quote:
+      endpoint: quote
+      # https://finnhub.io/api/v1/stock/profile2?symbol=AAPL&token=cju3it9r01qr958213c0cju3it9r01qr958213cg
+    profile2:
+      endpoint: stock/profile2
+    symbol:
+      endpoint: stock/symbol
+      exchange: US
+    # stockSymbol: AAPL,MSFT,NVDA
+
+
+redis-key:
+  symbol: AAPL,MSFT,NVDA
+
+spring.data.redis:
+  host: localhost
+  password: 6379
+  database: 2
+  # Redis默认情况下有16个分片，这里配置具体使用的分片，默认是0
+  lettuce:
+    pool:
+      # 当池耗尽时，在引发异常之前连接分配可以阻塞的最长时间（使用负值表示没有限制） 默认 -1
+      max-wait: -1ms
+      # 连接池最大连接数（使用负值表示没有限制） 默认 8
+      max-active: 8
+      # 连接池中的最大空闲连接 默认 8
+      max-idle: 8
+      # 连接池中的最小空闲连接 默认 0
+      min-idle: 0
+  # 连接超时时间
+  timeout: 10000ms
+  # 一般来说是不用配置的，Spring Cache 会根据依赖的包自行装配
+  cache:
+    type: redis
+
+#這樣寫的話，原本內建的/actuator/xxx路徑，都會變成/data/xxx，可以用來防止被其他人猜到
+management.endpoints.web.base-path: /data
+
+# 可以這樣寫，就會開啟所有endpoints(不包含shutdown)
+management.endpoints.web.exposure.include: "*"
+
+# 如果要開啟/actuator/shutdown，要額外再加這一行
+management.endpoint.shutdown.enabled: true
+
+# exclude可以用來關閉某些endpoints
+# exclude通常會跟include一起用，就是先include了全部，然後再exclude /actuator/beans這個endpoint
+management.endpoints.web.exposure.exclude: beans
+
+# 也可以這樣寫，就只會開啟指定的endpoint，因此此處只會再額外開啟/actuator/beans和/actuator/mappings
+web.exposure.include: beans,mappings
+
+# now we can access more details from endpoint /metrics/health/readiness
+management.endpoint.health.group.readiness.show-details: always
